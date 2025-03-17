@@ -1,0 +1,8 @@
+.nested-table td {
+    padding: 0.25rem 0.5rem;
+}
+.no-bullets {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
