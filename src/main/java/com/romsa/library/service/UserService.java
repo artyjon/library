@@ -14,14 +14,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
     private final BookLoanRepository loanRepository;
     private final MessageSource messageSource;
 
-
+    @Transactional
     public void saveUser(User user, BindingResult result) {
         if (userRepository.existsByEmail(user.getEmail())) {
             result.rejectValue("email", "error.user", messageSource.getMessage("user.email.exists", null, LocaleContextHolder.getLocale()));
@@ -30,7 +29,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-
+    @Transactional
     public void updateUser(Long id, User updatedUser, BindingResult result) {
 
         User user = userRepository.findById(id).orElse(null);
@@ -50,7 +49,7 @@ public class UserService {
 
         userRepository.save(user);
     }
-
+    @Transactional
     public void deleteUser(Long id) {
         if (loanRepository.existsByUserId(id)) {
             throw new RuntimeException();

@@ -14,7 +14,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class BookService {
 
     private final BookRepository bookRepository;
@@ -25,6 +24,7 @@ public class BookService {
         return bookRepository.findAll();
     }
 
+    @Transactional
     public void saveBook(Book book, BindingResult result) {
         if (bookRepository.existsByTitleAndAuthor(book.getTitle(), book.getAuthor())) {
             result.rejectValue("title", "error.book",
@@ -33,7 +33,7 @@ public class BookService {
         }
         bookRepository.save(book);
     }
-
+    @Transactional
     public void deleteBook(Long id) {
         if (loanRepository.existsByBookId(id)) {
             throw new RuntimeException();
@@ -41,7 +41,7 @@ public class BookService {
             bookRepository.deleteById(id);
         }
     }
-
+    @Transactional(readOnly = true)
     public Book findById(Long bookId) {
         return bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found"));

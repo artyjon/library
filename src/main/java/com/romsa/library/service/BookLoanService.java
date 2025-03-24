@@ -15,7 +15,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class BookLoanService {
 
     private final BookService bookService;
@@ -28,7 +27,7 @@ public class BookLoanService {
         return loanRepository.findAll();
     }
 
-
+    @Transactional
     public void loanBook(Long userId, Long bookId) {
         User user = userService.findById(userId);
         Book book = bookService.findById(bookId);
@@ -46,6 +45,7 @@ public class BookLoanService {
         makeLoan(user, book);
     }
 
+    @Transactional
     public void returnBook(Long userId, Long bookId) {
         User user = userService.findById(userId);
         Book book = bookService.findById(bookId);
