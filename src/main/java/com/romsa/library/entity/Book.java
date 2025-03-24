@@ -12,22 +12,21 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    @Size(min = 3, max = 100, message = "Title must be between 3 and 100 characters")
-    @NotBlank(message = "Title is required")
-    private String title;
+        @Size(min = 3, max = 100, message = "{book.title.size.error}")
+        @NotBlank(message = "{book.title.blank}")
+        private String title;
 
-    @Size(min = 3, max = 100, message = "Author must be between 3 and 100 characters")
-    @NotBlank(message = "Author is required")
-    private String author;
+        @Size(min = 3, max = 100, message = "{book.author.size.error}")
+        @NotBlank(message = "{book.author.blank}")
+        private String author;
 
-    @NotNull(message = "Year is required")
-    private int year;
+        @NotNull(message = "{book.year.null}")
+        private int year;
 
-    @NotNull(message = "Total copies is required")
-    private int totalCopies;
-
-}
+        @NotNull(message = "{book.copies.null}")
+        private int totalCopies;
+    }

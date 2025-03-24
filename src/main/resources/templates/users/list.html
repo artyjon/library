@@ -9,67 +9,82 @@
           crossorigin="anonymous">
     <script th:src="@{/js/errorMessage.js}"></script>
     <script th:src="@{/js/filter.js}"></script>
-    <style th:src="@{/css/table-style.css}"></style>
+    <link rel="stylesheet" th:href="@{/css/table-style.css}">
+
 </head>
 <body>
 <div class="container my-4">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
         <div class="container-fluid">
-            <a class="navbar-brand text-primary" th:href="@{/}">Library</a>
+            <a class="navbar-brand text-primary" th:href="@{/}" th:text="#{siteName}"></a>
             <div>
-                <a th:href="@{/users}" class="btn btn-outline-primary me-2">Пользователи</a>
-                <a th:href="@{/books}" class="btn btn-outline-secondary">Книги</a>
+                <a href="?lang=en">English</a> |
+                <a href="?lang=ru">Русский</a> |
+                <a href="?lang=jp">日本語</a>
+            </div>
+            <div>
+                <a th:href="@{/users}" class="btn btn-outline-primary me-2" th:text="#{allUsers}"></a>
+                <a th:href="@{/books}" class="btn btn-outline-secondary" th:text="#{allBooks}"></a>
             </div>
         </div>
     </nav>
 
-    <h3>Список пользователей</h3>
+    <h3 th:text="#{listOfUsers}"></h3>
 
     <div class="mb-3">
-        <input type="text" id="userFilter" class="form-control" placeholder="Фильтр по имени пользователя" onkeyup="filterUsers()">
+        <input type="text" id="userFilter" class="form-control" th:placeholder="#{usersFilter}" onkeyup="filterUsers()">
     </div>
 
     <div class="d-flex justify-content-end mb-3">
-        <a th:href="@{/users/add}" class="btn btn-primary">Добавить пользователя</a>
+        <a th:href="@{/users/add}" class="btn btn-primary" th:text="#{addUser}"></a>
     </div>
 
     <table class="table table-striped table-bordered">
         <thead class="text-center">
         <tr>
-            <th>Имя</th>
-            <th>Взятые книги</th>
-            <th>Дата выдачи</th>
-            <th>Действия</th>
+            <th th:text="#{userName}"></th>
+            <th th:text="#{borrowedBooks}"></th>
+            <th th:text="#{borrowDate}"></th>
+            <th th:text="#{actions}"></th>
         </tr>
         </thead>
         <tbody id="userTableBody">
         <tr th:each="user : ${users}" th:attr="data-username=${user.name}" class="user-row">
             <td class="align-middle text-center" th:text="${user.name}"></td>
             <td colspan="2">
-                <table class="table nested-table">
+                <table class="table nested-table w-100">
                     <tbody>
                     <tr th:each="loan : ${user.borrowedBooks}">
-                        <td th:text="${loan.book.title}"></td>
-                        <td th:text="${#temporals.format(loan.borrowDate, 'dd-MM-yyyy')}"></td>
+                        <td class="text-center w-50" th:text="${loan.book.title}"></td>
+                        <td class="text-center w-50"
+                            th:text="${#temporals.format(loan.borrowDate, #messages.msg('date.format'))}"></td>
                     </tr>
                     </tbody>
                 </table>
             </td>
             <td class="align-middle text-center">
                 <div class="d-flex justify-content-center gap-2">
-                    <a th:href="@{/users/borrow/{id}(id=${user.id})}" class="btn btn-sm btn-primary">Выдать/вернуть книгу</a>
-                    <a th:href="@{/users/update/{id}(id=${user.id})}" class="btn btn-sm btn-success">Обновить данные</a>
-                    <a th:href="@{/users/delete/{id}(id=${user.id})}" class="btn btn-sm btn-danger"
-                       onclick="return confirm('Удалить этого пользователя?');">Удалить</a>
+                    <a th:href="@{/users/borrow(id=${user.id})}" class="btn btn-sm btn-primary"
+                       th:text="#{borrowOrReturn}"></a>
+                    <a th:href="@{/users/update(id=${user.id})}" class="btn btn-sm btn-success"
+                       th:text="#{updateData}"></a>
+                    <a th:href="@{/users/delete(id=${user.id})}"
+                       class="btn btn-sm btn-danger"
+                       th:onclick="'return confirm(\'' + #{deleteUser.confirm} + '\');'"
+                       th:text="#{deleteUser}">
+                    </a>
                 </div>
             </td>
         </tr>
         </tbody>
     </table>
 
-    <div id="errorMessage" th:text="${errorMessage}" style="display: none;"></div>
-
+    <div th:if="${errorMessage != null}"
+         th:text="#{${errorMessage}}"
+         class="alert alert-danger"
+         id="errorMessage">
+    </div>
 </div>
 
 </body>

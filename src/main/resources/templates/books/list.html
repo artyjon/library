@@ -16,33 +16,39 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
         <div class="container-fluid">
-            <a class="navbar-brand text-primary" th:href="@{/}">Library</a>
+            <a class="navbar-brand text-primary" th:href="@{/}" th:text="#{siteName}"></a>
             <div>
-                <a th:href="@{/users}" class="btn btn-outline-primary me-2">Пользователи</a>
-                <a th:href="@{/books}" class="btn btn-outline-secondary">Книги</a>
+                <a href="?lang=en">English</a> |
+                <a href="?lang=ru">Русский</a> |
+                <a href="?lang=jp">日本語</a>
+            </div>
+            <div>
+                <a th:href="@{/users}" class="btn btn-outline-primary me-2" th:text="#{allUsers}"></a>
+                <a th:href="@{/books}" class="btn btn-outline-secondary" th:text="#{allBooks}"></a>
             </div>
         </div>
     </nav>
 
-    <h3 class="mb-3">Список книг</h3>
+    <h3 th:text="#{listOfBooks}" class="mb-3"></h3>
 
     <div class="mb-4">
-        <input type="text" id="bookFilter" class="form-control" placeholder="Введите название книги..." onkeyup="filterBooks()">
+        <input type="text" id="bookFilter" class="form-control"
+               th:placeholder="#{booksFilter}" onkeyup="filterBooks()">
     </div>
 
     <div class="d-flex justify-content-end mb-3">
-        <a th:href="@{/books/add}" class="btn btn-primary">Добавить книгу</a>
+        <a th:href="@{/books/add}" class="btn btn-primary" th:text="#{addBook}"></a>
     </div>
 
     <table class="table table-striped text-center">
         <thead>
         <tr>
-            <th>Название</th>
-            <th>Автор</th>
-            <th>Оставшиеся копии</th>
-            <th>Выдана пользователю</th>
-            <th>Дата выдачи</th>
-            <th>Действия</th>
+            <th th:text="#{bookTitle}"></th>
+            <th th:text="#{author}"></th>
+            <th th:text="#{availableCopies}"></th>
+            <th th:text="#{borrowedTo}"></th>
+            <th th:text="#{borrowDate}"></th>
+            <th th:text="#{actions}"></th>
         </tr>
         </thead>
         <tbody id="bookTableBody">
@@ -52,23 +58,36 @@
             <td class="align-middle" th:text="${book.totalCopies}"></td>
             <td class="align-middle">
                 <ul class="no-bullets">
-                    <li th:each="loan : ${bookLoans}" th:if="${loan.book.id == book.id}" th:text="${loan.user.name}"></li>
+                    <li th:each="loan : ${bookLoans}"
+                        th:if="${loan.book.id == book.id}"
+                        th:text="${loan.user.name}">
+                    </li>
                 </ul>
             </td>
             <td class="align-middle">
                 <ul class="no-bullets">
-                    <li th:each="loan : ${bookLoans}" th:if="${loan.book.id == book.id}" th:text="${#temporals.format(loan.borrowDate, 'dd-MM-yyyy')}"></li>
+                    <li th:each="loan : ${bookLoans}"
+                        th:if="${loan.book.id == book.id}"
+                        th:text="${#temporals.format(loan.borrowDate, #messages.msg('date.format'))}">
+                    </li>
                 </ul>
             </td>
             <td class="align-middle">
-                <a th:href="@{/books/delete/{id}(id=${book.id})}" class="btn btn-danger btn-sm" onclick="return confirm('Удалить эту книгу?');">Удалить</a>
+                <a th:href="@{/books/delete(id=${book.id})}"
+                   class="btn btn-danger btn-sm"
+                   th:onclick="'return confirm(\'' + #{deleteBook.confirm} + '\');'"
+                   th:text="#{deleteBook}">
+                </a>
             </td>
         </tr>
         </tbody>
     </table>
 
-    <div id="errorMessage" th:text="${errorMessage}" style="display: none;"></div>
-
+    <div th:if="${errorMessage != null}"
+         th:text="#{${errorMessage}}"
+         class="alert alert-danger"
+         id="errorMessage">
+    </div>
 </div>
 </body>
 </html>

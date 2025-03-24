@@ -3,9 +3,11 @@ package com.romsa.library.controller;
 import com.romsa.library.entity.Book;
 import com.romsa.library.service.BookLoanService;
 import com.romsa.library.service.BookService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -31,17 +33,26 @@ public class BookController {
     }
 
     @PostMapping("/save")
-    public String addBook(@ModelAttribute("book") Book book) {
-        bookService.saveBook(book);
+    public String addBook(@ModelAttribute("book") @Valid Book book, BindingResult result) {
+        if (result.hasErrors()) {
+            return "books/add-book";
+        }
+
+        bookService.saveBook(book, result);
+
+        if (result.hasErrors()) {
+            return "books/add-book";
+        }
+
         return "redirect:/books";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteBook(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @GetMapping("/delete")
+    public String deleteBook(@RequestParam Long id, RedirectAttributes redirectAttributes) {
         try {
             bookService.deleteBook(id);
         } catch (RuntimeException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "book.error.loans");
         }
         return "redirect:/books";
     }

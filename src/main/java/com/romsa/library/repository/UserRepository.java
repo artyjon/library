@@ -1,7 +1,6 @@
 package com.romsa.library.repository;
 
 import com.romsa.library.entity.User;
-import jakarta.validation.constraints.Email;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,13 +9,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    User findUserById(Long id);
+
     void deleteUserById(Long id);
 
-    boolean existsByEmail(@Email(message = "Invalid email format") String email);
+    boolean existsByEmail(String email);
 
     @Query("""
-        select count(u) > 0 from User u
-        where u.email = :firstEmail and u.email <> :secondEmail
-        """)
-    boolean existsByEmailAndEmailIsNotTheSame(@Param("firstEmail") String firstEmail, @Param("secondEmail") String secondEmail);
+                select count(u) > 0 from User u
+                where u.email = :email and u.id <> :userId
+            """)
+    boolean existsByEmailAndNotSameUser(@Param("email") String email, @Param("userId") Long userId);
 }

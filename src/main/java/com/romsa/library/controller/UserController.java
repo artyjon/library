@@ -4,6 +4,7 @@ import com.romsa.library.entity.User;
 import com.romsa.library.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,46 +32,47 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public String saveUser(@ModelAttribute("user") @Valid User user, RedirectAttributes redirectAttributes, BindingResult result) {
+    public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult result) {
         if (result.hasErrors()) {
             return "users/add-user";
         }
 
-        try {
-            userService.saveUser(user);
-        } catch (RuntimeException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/users/add";
+        userService.saveUser(user, result);
+
+        if (result.hasErrors()) {//валидация уникальности email
+            return "users/add-user";
         }
+
         return "redirect:/users";
     }
 
-    @GetMapping("/update/{id}")
-    public String updateUserForm(@PathVariable("id") Long id, Model model) {
-        User user = userService.findUserById(id);
+    @GetMapping("/update")
+    public String updateUserForm(@RequestParam Long id, Model model) {
+        User user = userService.findById(id);
         model.addAttribute("user", user);
         return "users/update-user";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") Long id, @ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
-        try {
-            userService.updateUser(id, user);
+    @PostMapping("/update")
+    public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult result) {
+        if (result.hasErrors()) {
+            return "users/update-user";
+        }
 
-        } catch (RuntimeException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/users/update/" + id;
+        userService.updateUser(user.getId(), user, result);
+
+        if (result.hasErrors()) {  //валидация уникальности email
+            return "users/update-user";
         }
 
         return "redirect:/users";
     }
-
-    @GetMapping("/delete/{id}")
-    public String deleteUserById(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+    @GetMapping("/delete")
+    public String deleteUserById(@RequestParam Long id, RedirectAttributes redirectAttributes) {
         try {
             userService.deleteUser(id);
         } catch (RuntimeException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "user.error.loans");
         }
         return "redirect:/users";
     }

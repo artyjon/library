@@ -6,3 +6,12 @@
     padding-left: 0;
     margin-bottom: 0;
 }
+.nested-table {
+    width: 100%;
+}
+.nested-table tr td:first-child {
+    width: 70%;
+}
+.nested-table tr td:last-child {
+    width: 30%;
+}

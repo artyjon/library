@@ -2,22 +2,22 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Library - Borrowed Books</title>
+    <title th:text="#{user.borrow.title}">Borrowed Books</title>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
           crossorigin="anonymous">
-    <style th:src="@{/css/table-style.css}"></style>
+    <link rel="stylesheet" th:href="@{/css/table-style.css}">
 </head>
 <body>
 <div class="container my-4">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
         <div class="container-fluid">
-            <a class="navbar-brand text-primary" th:href="@{/}">Library</a>
+            <a class="navbar-brand text-primary" th:href="@{/}" th:text="#{siteName}">Library</a>
             <div>
-                <a th:href="@{/users}" class="btn btn-outline-primary me-2">Пользователи</a>
-                <a th:href="@{/books}" class="btn btn-outline-secondary">Книги</a>
+                <a th:href="@{/users}" class="btn btn-outline-primary me-2" th:text="#{allUsers}">Users</a>
+                <a th:href="@{/books}" class="btn btn-outline-secondary" th:text="#{allBooks}">Books</a>
             </div>
         </div>
     </nav>
@@ -25,25 +25,31 @@
     <div class="card mb-4">
         <div class="card-body">
             <h3 th:text="${user.name}"></h3>
-            <p><strong>Город:</strong> <span th:text="${user.city}"></span></p>
-            <p><strong>Электронная почта:</strong> <span th:text="${user.email}"></span></p>
+            <p><strong th:text="#{user.city}">City:</strong> <span th:text="${user.city}"></span></p>
+            <p><strong th:text="#{user.email}">Email:</strong> <span th:text="${user.email}"></span></p>
         </div>
     </div>
 
     <div class="mb-4 text-center">
-        <a th:href="@{/users/borrow/{id}/loan(id=${user.id})}" class="btn btn-primary me-2">Выдать книгу</a>
-        <a th:href="@{/users}" class="btn btn-secondary">Назад к списку пользователей</a>
+        <a th:href="@{/users/borrow/loan(id=${user.id})}"
+           class="btn btn-primary me-2"
+           th:text="#{user.borrow.book}">
+        </a>
+        <a th:href="@{/users}"
+           class="btn btn-secondary"
+           th:text="#{back.to.list}">
+        </a>
     </div>
 
     <div class="table-responsive">
         <table class="table table-bordered table-striped text-center">
-            <thead class="table-dark text-center align-middle" >
+            <thead class="table-dark text-center align-middle">
             <tr>
-                <th>Название</th>
-                <th>Автор</th>
-                <th>Год</th>
-                <th>Дата выдачи</th>
-                <th>Действие</th>
+                <th th:text="#{book.title}">Title</th>
+                <th th:text="#{book.author}">Author</th>
+                <th th:text="#{book.year}">Year</th>
+                <th th:text="#{borrow.date}">Borrow Date</th>
+                <th th:text="#{actions}">Action</th>
             </tr>
             </thead>
             <tbody>
@@ -51,12 +57,12 @@
                 <td th:text="${loan.book.title}"></td>
                 <td th:text="${loan.book.author}"></td>
                 <td th:text="${loan.book.year}"></td>
-                <td th:text="${#temporals.format(loan.borrowDate, 'dd-MM-yyyy')}"></td>
+                <td th:text="${#temporals.format(loan.borrowDate, #messages.msg('date.format'))}"></td>
                 <td>
-                    <a th:href="@{/users/borrow/{id}/return/{bookId}(id=${user.id}, bookId=${loan.book.id})}"
+                    <a th:href="@{/users/borrow/return(id=${user.id}, bookId=${loan.book.id})}"
                        class="btn btn-danger btn-sm"
-                       onclick="return confirm('Вы уверены, что хотите вернуть эту книгу?');">
-                        Вернуть
+                       th:onclick="'return confirm(\'' + #{user.borrow.return.confirm} + '\');'"
+                       th:text="#{user.borrow.return}">
                     </a>
                 </td>
             </tr>

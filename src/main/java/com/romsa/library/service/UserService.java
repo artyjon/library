@@ -4,8 +4,11 @@ import com.romsa.library.entity.User;
 import com.romsa.library.repository.BookLoanRepository;
 import com.romsa.library.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
@@ -16,40 +19,41 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BookLoanRepository loanRepository;
+    private final MessageSource messageSource;
 
-    public User findById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
 
-    public void saveUser(User user) {
-
-        if(userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Пользователь с таким email уже существует");
+    public void saveUser(User user, BindingResult result) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            result.rejectValue("email", "error.user", messageSource.getMessage("user.email.exists", null, LocaleContextHolder.getLocale()));
+            return;
         }
-
         userRepository.save(user);
     }
 
 
-    public void updateUser(Long id, User updatedUser) {
+    public void updateUser(Long id, User updatedUser, BindingResult result) {
 
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(id).orElse(null);
 
-        if (userRepository.existsByEmailAndEmailIsNotTheSame(user.getEmail(), updatedUser.getEmail())) {
-            throw new RuntimeException("Пользователь с таким email уже существует");
+        if (user == null) {
+            result.rejectValue("id", "error.user", "User not found");
+            return;
         }
-            user.setName(updatedUser.getName());
-            user.setCity(updatedUser.getCity());
-            user.setEmail(updatedUser.getEmail());
+
+        if (userRepository.existsByEmailAndNotSameUser(updatedUser.getEmail(), id)) {
+            result.rejectValue("email", "error.user", messageSource.getMessage("user.email.exists", null, LocaleContextHolder.getLocale()));
+            return;
+        }
+        user.setName(updatedUser.getName());
+        user.setCity(updatedUser.getCity());
+        user.setEmail(updatedUser.getEmail());
 
         userRepository.save(user);
     }
 
     public void deleteUser(Long id) {
         if (loanRepository.existsByUserId(id)) {
-            throw new RuntimeException("Удаление пользователя невозможно, как минимум 1 книга не возвращена");
+            throw new RuntimeException();
         } else {
             userRepository.deleteUserById(id);
         }
@@ -59,8 +63,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+
+    public User findById(Long id) {
+        return userRepository.findUserById(id);
     }
 }

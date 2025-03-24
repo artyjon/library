@@ -19,16 +19,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 2, max = 30, message = "Имя пользователя должно содержать от 2 до 30 символов")
-    @NotBlank(message = "Имя пользователя не может быть пустым")
+    @Size(min = 2, max = 30, message = "{user.name.size.error}")
+    @NotBlank(message = "{user.name.blank}")
     private String name;
 
-    @Size(min = 2, max = 30, message = "Город должен содержать от 2 до 30 символов")
-    @NotBlank(message = "Город не может быть пустым")
+    @Size(min = 2, max = 30, message = "{user.city.size.error}")
+    @NotBlank(message = "{user.city.blank}")
     private String city;
 
-    @NotBlank(message = "Email не должен быть пустым")
-    @Email(message = "Введите корректный email")
+    @NotBlank(message = "{user.email.blank}")
+    @Email(message = "{user.email.invalid}")
     @Column(unique = true)
     private String email;
 

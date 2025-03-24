@@ -1,9 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const errorMessage = document.getElementById('errorMessage')?.textContent.trim();
-    if (errorMessage) {
-        showCustomAlert(errorMessage);
+    const errorMessageElement = document.getElementById('errorMessage');
+    if (errorMessageElement) {
+        const errorMessage = errorMessageElement.textContent.trim();
+        if (errorMessage) {
+            showCustomAlert(errorMessage);
+        }
     }
 });
+
 
 function showCustomAlert(message) {
     const alertBox = document.createElement('div');

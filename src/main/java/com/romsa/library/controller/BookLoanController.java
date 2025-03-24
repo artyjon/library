@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/users/borrow/{id}")
+@RequestMapping("/users/borrow")
 public class BookLoanController {
 
     private final BookService bookService;
@@ -19,32 +19,32 @@ public class BookLoanController {
     private final UserService userService;
 
     @GetMapping
-    public String borrowedBooks(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userService.findUserById(id));
+    public String borrowedBooks(@RequestParam Long id, Model model) {
+        model.addAttribute("user", userService.findById(id));
         return "loan/borrowed-books";
     }
 
     @GetMapping("/loan")
-    public String loanBookForm(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userService.findUserById(id));
+    public String loanBookForm(@RequestParam Long id, Model model) {
+        model.addAttribute("user", userService.findById(id));
         model.addAttribute("books", bookService.findAll());
         return "loan/loan-book";
     }
 
     @PostMapping("/loan")
-    public String loanBook(@PathVariable Long id, @RequestParam Long bookId, RedirectAttributes redirectAttributes) {
+    public String loanBook(@RequestParam("id") Long userId, @RequestParam Long bookId, RedirectAttributes redirectAttributes) {
         try {
-            loanService.loanBook(id, bookId);
+            loanService.loanBook(userId, bookId);
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return String.format("redirect:/users/borrow/%d/loan", id);
+            return String.format("redirect:/users/borrow/loan?id=%d", userId);
         }
-        return String.format("redirect:/users/borrow/%d", id);
+        return String.format("redirect:/users/borrow?id=%d", userId);
     }
 
-    @GetMapping("/return/{bookId}")
-    public String returnBook(@PathVariable Long id, @PathVariable Long bookId) {
+    @GetMapping("/return")
+    public String returnBook(@RequestParam Long id, @RequestParam Long bookId) {
         loanService.returnBook(id, bookId);
-        return String.format("redirect:/users/borrow/%d", id);
+        return String.format("redirect:/users/borrow?id=%d", id);
     }
 }
