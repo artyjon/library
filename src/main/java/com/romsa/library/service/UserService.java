@@ -23,7 +23,8 @@ public class UserService {
     @Transactional
     public void saveUser(User user, BindingResult result) {
         if (userRepository.existsByEmail(user.getEmail())) {
-            result.rejectValue("email", "error.user", messageSource.getMessage("user.email.exists", null, LocaleContextHolder.getLocale()));
+            result.rejectValue("email", "error.user",
+                    messageSource.getMessage("user.email.exists", null, LocaleContextHolder.getLocale()));
             return;
         }
         userRepository.save(user);
@@ -38,9 +39,10 @@ public class UserService {
             result.rejectValue("id", "error.user", "User not found");
             return;
         }
-
+        // Проверяем, не используется ли email другим пользователем, кроме текущего
         if (userRepository.existsByEmailAndNotSameUser(updatedUser.getEmail(), id)) {
-            result.rejectValue("email", "error.user", messageSource.getMessage("user.email.exists", null, LocaleContextHolder.getLocale()));
+            result.rejectValue("email", "error.user",
+                    messageSource.getMessage("user.email.exists", null, LocaleContextHolder.getLocale()));
             return;
         }
         user.setName(updatedUser.getName());

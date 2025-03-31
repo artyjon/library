@@ -13,26 +13,53 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggingAspect {
 
+    // Инициализация логгера для записи событий
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
+    /**
+     * Логирование вызовов методов сервисного слоя
+     * Перехватывает выполнение любого метода в пакете service
+     */
     @Before("execution(* com.romsa.library.service.*.*(..))")
     public void logServiceMethods(JoinPoint joinPoint) {
         logger.info("Executing: {}", joinPoint.getSignature().getName());
     }
 
-
+    /**
+     * Логирование начала выполнения методов контроллера
+     * Срабатывает перед вызовом любого метода в пакете controller
+     */
     @Before("execution(* com.romsa.library.controller.*.*(..))")
     public void logControllerBefore(JoinPoint joinPoint) {
         logger.info("Вызов метода: {}", joinPoint.getSignature().getName());
     }
 
-    @AfterReturning(pointcut = "execution(* com.romsa.library.controller.*.*(..))", returning = "result")
+    /**
+     * Логирование успешного завершения методов контроллера
+     * Срабатывает после успешного выполнения метода
+     * @param result - возвращаемое значение метода
+     */
+    @AfterReturning(
+            pointcut = "execution(* com.romsa.library.controller.*.*(..))",
+            returning = "result"
+    )
     public void logControllerAfterReturning(JoinPoint joinPoint, Object result) {
         logger.info("Метод {} завершился успешно", joinPoint.getSignature().getName());
     }
 
-    @AfterThrowing(pointcut = "execution(* com.romsa.library.controller.*.*(..))", throwing = "exception")
+    /**
+     * Логирование ошибок в методах контроллера
+     * Срабатывает при ВОЗНИКНОВЕНИИ ИСКЛЮЧЕНИЯ в методе
+     * @param exception - пойманное исключение
+     */
+    @AfterThrowing(
+            pointcut = "execution(* com.romsa.library.controller.*.*(..))",
+            throwing = "exception"
+    )
     public void logControllerAfterThrowing(JoinPoint joinPoint, Exception exception) {
-        logger.error("Ошибка в методе {}: {}", joinPoint.getSignature().getName(), exception.getMessage());
+        logger.error("Ошибка в методе {}: {}",
+                joinPoint.getSignature().getName(),
+                exception.getMessage()
+        );
     }
 }

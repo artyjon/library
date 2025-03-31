@@ -32,6 +32,7 @@ public class BookLoanService {
         User user = userService.findById(userId);
         Book book = bookService.findById(bookId);
 
+        // Check if book is already loaned
         if (loanRepository.existsByUserIdAndBookId(userId, bookId)) {
             throw new RuntimeException(
                     messageSource.getMessage(
@@ -39,6 +40,7 @@ public class BookLoanService {
                             null, LocaleContextHolder.getLocale())
             );
         }
+        // Check if book has available copies
         if (book.getTotalCopies() < 1) {
             throw new RuntimeException(
                     messageSource.getMessage(
