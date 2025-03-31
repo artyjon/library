@@ -34,12 +34,16 @@ public class BookLoanService {
 
         if (loanRepository.existsByUserIdAndBookId(userId, bookId)) {
             throw new RuntimeException(
-                    messageSource.getMessage("user.borrow.error.alreadyLoaned", null, LocaleContextHolder.getLocale())
+                    messageSource.getMessage(
+                            "user.borrow.error.alreadyLoaned",
+                            null, LocaleContextHolder.getLocale())
             );
         }
         if (book.getTotalCopies() < 1) {
             throw new RuntimeException(
-                    messageSource.getMessage("user.borrow.error.noCopies", null, LocaleContextHolder.getLocale())
+                    messageSource.getMessage(
+                            "user.borrow.error.noCopies",
+                            null, LocaleContextHolder.getLocale())
             );
         }
         makeLoan(user, book);

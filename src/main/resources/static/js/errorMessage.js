@@ -13,9 +13,9 @@ function showCustomAlert(message) {
     const alertBox = document.createElement('div');
     alertBox.textContent = message;
 
-    // Основные стили
+
     alertBox.style.position = 'fixed';
-    alertBox.style.top = '-100px'; // Начальная позиция за пределами экрана
+    alertBox.style.top = '-100px';
     alertBox.style.left = '50%';
     alertBox.style.transform = 'translateX(-50%)';
     alertBox.style.padding = '20px 30px';
@@ -33,7 +33,7 @@ function showCustomAlert(message) {
     document.body.appendChild(alertBox);
 
     setTimeout(() => {
-        alertBox.style.top = '20px'; // Выезжает сверху
+        alertBox.style.top = '20px';
         alertBox.style.opacity = '1';
     }, 100);
 
@@ -52,5 +52,5 @@ function hideAlert(alertBox) {
     alertBox.style.opacity = '0';
     setTimeout(() => {
         alertBox.remove();
-    }, 500); // Ждём завершения анимации
+    }, 500);
 }
