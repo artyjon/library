@@ -70,7 +70,3 @@ mvn spring-boot:run
 mvn test
 ```
 
-## Контакты
-Разработчик: Артём Ромса
-GitHub: [github.com/your-profile](https://github.com/your-profile)
-
