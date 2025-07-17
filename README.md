@@ -13,7 +13,7 @@ Library — это веб-приложение для управления би�
 - Управление пользователями и книгами
 - Отслеживание истории аренды
 <img width="1122" alt="Screenshot 2025-04-28 at 01 17 25" src="https://github.com/user-attachments/assets/8df61243-0c60-4ab9-bbf9-90b67cf3ea83" />
-<img width="1198" alt="Screenshot 2025-04-28 at 01 18 07" src="https://github.com/user-attachments/assets/55897949-0f33-444c-a296-89681d64efa5" />
+<img width="1508" height="768" alt="Screenshot 2025-07-18 at 00 34 39" src="https://github.com/user-attachments/assets/d99f8217-461d-47d7-897f-fd83ca4243a3" />
 
 ## Технологии
 ### Backend
